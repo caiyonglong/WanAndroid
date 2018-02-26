@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +26,6 @@ import com.cyl.wanandroid.ui.home.HomeFragment;
 import com.cyl.wanandroid.ui.hotsearch.HotFragment;
 import com.cyl.wanandroid.ui.knowledgesystem.KnowledgeSystemFragment;
 import com.cyl.wanandroid.ui.my.LoginActivity;
-import com.cyl.wanandroid.ui.my.MyFragment;
 import com.cyl.wanandroid.utils.RxBus;
 
 import java.util.ArrayList;
@@ -47,9 +47,13 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private LinearLayout mLlLogout;
 
     private List<BaseFragment> mFragments;
-    private int mLastFgIndex;
+    private int mCurPosition;
     private long mExitTime;
     private boolean mIsLogin;
+
+    private HomeFragment homeFragment;
+    private HotFragment hotFragment;
+    private KnowledgeSystemFragment knowledgeSystemFragment;
 
     @Override
     protected int getLayoutId() {
@@ -63,6 +67,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     protected void initView() {
         mNavigation.setNavigationItemSelectedListener(this);
+        mNavigation.setItemIconTintList(null);
         mNavigation.getMenu().findItem(R.id.navigation_home).setChecked(true);
         initNavView();
         initFragment();
@@ -125,7 +130,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menuHot) {
             mToolbar.setTitle(R.string.hot_title);
-            switchFragment(3);
+            switchFragment(2);
         } else if (item.getItemId() == R.id.menuSearch) {
             ARouter.getInstance().build("/hotsearch/SearchActivity").navigation();
         } else if (item.getItemId() == android.R.id.home) {
@@ -137,7 +142,9 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (!isNavigatingMain()) {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                mDrawerLayout.closeDrawers();
+            } else if (mCurPosition != 0) {
                 mToolbar.setTitle(R.string.app_name);
                 switchFragment(0);
             } else if ((System.currentTimeMillis() - mExitTime) > 2000) {
@@ -158,7 +165,6 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mFragments = new ArrayList<>();
         mFragments.add(HomeFragment.newInstance());
         mFragments.add(KnowledgeSystemFragment.newInstance());
-        mFragments.add(MyFragment.newInstance());
         mFragments.add(HotFragment.newInstance());
     }
 
@@ -173,20 +179,26 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         }
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment targetFg = mFragments.get(position);
-        Fragment lastFg = mFragments.get(mLastFgIndex);
-        mLastFgIndex = position;
-        ft.hide(lastFg);
+        for (int i = 0; i < mFragments.size(); i++) {
+            ft.hide(mFragments.get(i));
+        }
         if (!targetFg.isAdded())
             ft.add(R.id.layout_fragment, targetFg);
         ft.show(targetFg);
+        mCurPosition = position;
         ft.commitAllowingStateLoss();
     }
 
-    private boolean isNavigatingMain() {
-        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.layout_fragment);
-        return (currentFragment instanceof HomeFragment);
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        Log.e("TAG", fragment.getClass().getName() + "--");
+        if (homeFragment == null && fragment instanceof HomeFragment)
+            homeFragment = (HomeFragment) fragment;
+        if (hotFragment == null && fragment instanceof HotFragment)
+            hotFragment = (HotFragment) fragment;
+        if (knowledgeSystemFragment == null && fragment instanceof KnowledgeSystemFragment)
+            knowledgeSystemFragment = (KnowledgeSystemFragment) fragment;
     }
-
 
     private void initNavView() {
         mCivAvatar = mNavigation.getHeaderView(0).findViewById(R.id.civAvatar);

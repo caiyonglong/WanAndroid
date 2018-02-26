@@ -167,9 +167,10 @@ public class HomePresenter extends BasePresenter<HomeContract.View> implements H
                 DataResponse<User> dataResponse = (DataResponse<User>) map.get(Constant.USER_KEY);
                 if (dataResponse.getErrorCode() == 0) {
                     mView.showSuccess(App.getAppContext().getString(R.string.auto_login_success));
-                } else {
-                    mView.showFaild(String.valueOf(dataResponse.getErrorMsg()));
                 }
+//                else {
+//                    mView.showFaild(String.valueOf(dataResponse.getErrorMsg()));
+//                }
                 List<Banner> banners = (List<Banner>) map.get(Constant.BANNER_KEY);
                 Article article = (Article) map.get(Constant.ARTICLE_KEY);
                 mView.setHomeBanners(banners);

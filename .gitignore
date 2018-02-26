@@ -3,6 +3,12 @@
 /local.properties
 /.idea/workspace.xml
 /.idea/libraries
+/app/_360
+/app/baidu
+/app/release
+/app/wandoujia
+/app/xiaomi
+/app/yingyongbao
 .DS_Store
 /build
 /captures

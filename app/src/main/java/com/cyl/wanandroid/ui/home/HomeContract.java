@@ -19,7 +19,6 @@ public interface HomeContract {
         void setHomeArticles(Article article, @LoadType.checker int loadType);
 
         void collectArticleSuccess(int position, Article.DatasBean bean);
-
     }
 
     interface Presenter extends BaseContract.BasePresenter<View> {

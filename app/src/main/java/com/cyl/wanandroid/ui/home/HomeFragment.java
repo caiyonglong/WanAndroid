@@ -122,6 +122,13 @@ public class HomeFragment extends BaseFragment<HomePresenter> implements HomeCon
     public void collectArticleSuccess(int position, Article.DatasBean bean) {
         mArticleAdapter.setData(position, bean);
     }
+//
+//    @Override
+//    public void showFaild(String errorMsg) {
+//        super.showFaild(errorMsg);
+//        mSwipeRefreshLayout.setRefreshing(false);
+//    }
+
 
     @Override
     public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {

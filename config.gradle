@@ -1,17 +1,17 @@
 ext {
 
     android = [
-            compileSdkVersion: 25,
-            buildToolsVersion: "25.0.2",
-            applicationId    : "com.will.weiyue",
+            compileSdkVersion: 27,
+            buildToolsVersion: "27.0.2",
+            applicationId    : "com.cyl.wanandroid",
             minSdkVersion    : 19,
-            targetSdkVersion : 25,
+            targetSdkVersion : 27,
             versionCode      : 1,
             versionName      : "1.0"
     ]
 
     dependVersion = [
-            support: "25.3.1",
+            support: "27.0.2",
             dbflow : "4.2.4"
     ]
 
