@@ -44,7 +44,7 @@ public class ProjectActivity extends BaseActivity<ProjectPresenter> implements P
 
     @Override
     protected void initView() {
-        mToolbar.setTitle(R.string.title_project);
+        setToolbarTitle(getApplicationContext().getString(R.string.title_project));
         mPresenter.loadProjects();
     }
 
