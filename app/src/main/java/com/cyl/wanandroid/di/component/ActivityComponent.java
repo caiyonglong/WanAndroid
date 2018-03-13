@@ -8,10 +8,12 @@ import com.cyl.wanandroid.di.scope.ContextLife;
 import com.cyl.wanandroid.di.scope.PerActivity;
 import com.cyl.wanandroid.ui.article.ArticleContentActivity;
 import com.cyl.wanandroid.ui.hotsearch.SearchActivity;
+import com.cyl.wanandroid.ui.hotsearch.SearchDetailActivity;
 import com.cyl.wanandroid.ui.my.LoginActivity;
 import com.cyl.wanandroid.ui.my.MyBookmarkActivity;
 import com.cyl.wanandroid.ui.my.MyCollectionActivity;
 import com.cyl.wanandroid.ui.my.RegisterActivity;
+import com.cyl.wanandroid.ui.project.ProjectActivity;
 
 import dagger.Component;
 
@@ -31,6 +33,10 @@ public interface ActivityComponent {
     Activity getActivity();
 
     void inject(SearchActivity activity);
+
+    void inject(ProjectActivity activity);
+
+    void inject(SearchDetailActivity activity);
 
     void inject(LoginActivity activity);
 

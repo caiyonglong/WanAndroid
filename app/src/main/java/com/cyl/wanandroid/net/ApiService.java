@@ -6,6 +6,7 @@ import com.cyl.wanandroid.bean.DataResponse;
 import com.cyl.wanandroid.bean.Friend;
 import com.cyl.wanandroid.bean.HotKey;
 import com.cyl.wanandroid.bean.KnowledgeSystem;
+import com.cyl.wanandroid.bean.Navigation;
 import com.cyl.wanandroid.bean.User;
 
 import java.util.List;
@@ -41,6 +42,27 @@ public interface ApiService {
     Observable<DataResponse<List<Banner>>> getHomeBanners();
 
     /**
+     * 项目分类
+     * http://www.wanandroid.com/project/tree/json
+     *
+     * @return BannerResponse
+     */
+    @GET("/project/tree/json")
+    Observable<DataResponse<List<KnowledgeSystem.ChildrenBean>>> getProjects();
+
+    /**
+     * 项目分类的文章
+     * http://www.wanandroid.com/project/list/1/json?cid=294
+     *
+     * @param page page
+     * @param cid  cid
+     */
+    @GET("/project/list/{page}/json")
+    Observable<DataResponse<Article>> getProjectArticles(@Path("page") int page, @Query("cid") int cid);
+
+
+
+    /**
      * 知识体系
      * http://www.wanandroid.com/tree/json
      *
@@ -48,6 +70,7 @@ public interface ApiService {
      */
     @GET("/tree/json")
     Observable<DataResponse<List<KnowledgeSystem>>> getKnowledgeSystems();
+
 
     /**
      * 知识体系下的文章
@@ -58,6 +81,14 @@ public interface ApiService {
      */
     @GET("/article/list/{page}/json")
     Observable<DataResponse<Article>> getKnowledgeSystemArticles(@Path("page") int page, @Query("cid") int cid);
+
+
+    /**
+     * 导航
+     * http://www.wanandroid.com/navi/json
+     */
+    @GET("/navi/json")
+    Observable<DataResponse<List<Navigation>>> getNavigations();
 
 
     /**

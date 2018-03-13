@@ -6,6 +6,8 @@ import com.cyl.wanandroid.base.App;
 import com.cyl.wanandroid.base.BasePresenter;
 import com.cyl.wanandroid.bean.Article;
 import com.cyl.wanandroid.bean.DataResponse;
+import com.cyl.wanandroid.bean.Friend;
+import com.cyl.wanandroid.bean.HotKey;
 import com.cyl.wanandroid.constant.Constant;
 import com.cyl.wanandroid.constant.LoadType;
 import com.cyl.wanandroid.db.HistoryModel;
@@ -17,13 +19,16 @@ import com.cyl.wanandroid.utils.RxSchedulers;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 
 /**
@@ -68,6 +73,7 @@ public class SearchPresenter extends BasePresenter<SearchContract.View> implemen
         mPage = 0;
         mIsRefresh = true;
         loadSearchArtcles(mK);
+        loadHotData();
     }
 
     @Override
@@ -152,6 +158,34 @@ public class SearchPresenter extends BasePresenter<SearchContract.View> implemen
             }
         });
 
+    }
+
+    @Override
+    public void loadHotData() {
+        mView.showLoading();
+        Observable<DataResponse<List<Friend>>> observableFriend = RetrofitManager.create(ApiService.class).getHotFriends();
+        Observable<DataResponse<List<HotKey>>> observableHotKey = RetrofitManager.create(ApiService.class).getHotKeys();
+        Observable.zip(observableFriend, observableHotKey, new BiFunction<DataResponse<List<Friend>>, DataResponse<List<HotKey>>, Map<String, Object>>() {
+            @Override
+            public Map<String, Object> apply(DataResponse<List<Friend>> response, DataResponse<List<HotKey>> response2) throws Exception {
+                Map<String, Object> objMap = new HashMap<>();
+                objMap.put(Constant.CONTENT_HOT_KEY, response2.getData());
+                objMap.put(Constant.CONTENT_HOT_FRIEND_KEY, response.getData());
+                return objMap;
+            }
+        }).compose(RxSchedulers.<Map<String, Object>>applySchedulers()).compose(mView.<Map<String, Object>>bindToLife()).subscribe(new Consumer<Map<String, Object>>() {
+            @Override
+            public void accept(Map<String, Object> map) throws Exception {
+                List<HotKey> hotKeys = (List<HotKey>) map.get(Constant.CONTENT_HOT_KEY);
+                List<Friend> friends = (List<Friend>) map.get(Constant.CONTENT_HOT_FRIEND_KEY);
+                mView.setHotData(hotKeys, friends);
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                mView.showFaild(throwable.getMessage());
+            }
+        });
     }
 
     @Override

@@ -8,9 +8,10 @@ import com.cyl.wanandroid.di.scope.ContextLife;
 import com.cyl.wanandroid.di.scope.PerFragment;
 import com.cyl.wanandroid.ui.article.ArticleListFragment;
 import com.cyl.wanandroid.ui.home.HomeFragment;
-import com.cyl.wanandroid.ui.hotsearch.HotFragment;
 import com.cyl.wanandroid.ui.knowledgesystem.KnowledgeSystemFragment;
 import com.cyl.wanandroid.ui.my.MyFragment;
+import com.cyl.wanandroid.ui.navigation.NavigationFragment;
+import com.cyl.wanandroid.ui.project.ProjectListFragment;
 
 import dagger.Component;
 
@@ -30,11 +31,15 @@ public interface FragmentComponent {
 
     void inject(HomeFragment fragment);
 
+    void inject(ProjectListFragment fragment);
+
     void inject(KnowledgeSystemFragment fragment);
 
     void inject(MyFragment fragment);
 
     void inject(ArticleListFragment fragment);
 
-    void inject(HotFragment fragment);
+//    void inject(HotFragment fragment);
+
+    void inject(NavigationFragment fragment);
 }

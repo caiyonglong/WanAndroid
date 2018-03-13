@@ -23,7 +23,6 @@ import com.cyl.wanandroid.constant.Constant;
 import com.cyl.wanandroid.event.LoginEvent;
 import com.cyl.wanandroid.net.CookiesManager;
 import com.cyl.wanandroid.ui.home.HomeFragment;
-import com.cyl.wanandroid.ui.hotsearch.HotFragment;
 import com.cyl.wanandroid.ui.knowledgesystem.KnowledgeSystemFragment;
 import com.cyl.wanandroid.ui.my.LoginActivity;
 import com.cyl.wanandroid.utils.RxBus;
@@ -52,7 +51,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     private boolean mIsLogin;
 
     private HomeFragment homeFragment;
-    private HotFragment hotFragment;
+//    private HotFragment hotFragment;
     private KnowledgeSystemFragment knowledgeSystemFragment;
 
     @Override
@@ -98,6 +97,10 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 mToolbar.setTitle(R.string.title_knowledgesystem);
                 switchFragment(1);
                 break;
+
+            case R.id.navigation_project:
+                ARouter.getInstance().build("/project/ProjectActivity").navigation();
+                break;
             case R.id.navigation_collection:
                 if (mIsLogin) ARouter.getInstance().build("/my/MyCollectionActivity").navigation();
                 else ToastUtils.showShort(R.string.not_login);
@@ -128,10 +131,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menuHot) {
-            mToolbar.setTitle(R.string.hot_title);
-            switchFragment(2);
-        } else if (item.getItemId() == R.id.menuSearch) {
+        if (item.getItemId() == R.id.menuSearch) {
             ARouter.getInstance().build("/hotsearch/SearchActivity").navigation();
         } else if (item.getItemId() == android.R.id.home) {
             mDrawerLayout.openDrawer(GravityCompat.START);
@@ -165,7 +165,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         mFragments = new ArrayList<>();
         mFragments.add(HomeFragment.newInstance());
         mFragments.add(KnowledgeSystemFragment.newInstance());
-        mFragments.add(HotFragment.newInstance());
+//        mFragments.add(HotFragment.newInstance());
     }
 
     /**
@@ -194,8 +194,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
         Log.e("TAG", fragment.getClass().getName() + "--");
         if (homeFragment == null && fragment instanceof HomeFragment)
             homeFragment = (HomeFragment) fragment;
-        if (hotFragment == null && fragment instanceof HotFragment)
-            hotFragment = (HotFragment) fragment;
+//        if (hotFragment == null && fragment instanceof HotFragment)
+//            hotFragment = (HotFragment) fragment;
         if (knowledgeSystemFragment == null && fragment instanceof KnowledgeSystemFragment)
             knowledgeSystemFragment = (KnowledgeSystemFragment) fragment;
     }

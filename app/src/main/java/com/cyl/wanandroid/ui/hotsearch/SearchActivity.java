@@ -15,6 +15,8 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.cyl.wanandroid.R;
 import com.cyl.wanandroid.base.BaseActivity;
 import com.cyl.wanandroid.bean.Article;
+import com.cyl.wanandroid.bean.Friend;
+import com.cyl.wanandroid.bean.HotKey;
 import com.cyl.wanandroid.bean.KnowledgeSystem;
 import com.cyl.wanandroid.constant.Constant;
 import com.cyl.wanandroid.db.HistoryModel;
@@ -47,11 +49,14 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
     ArticleAdapter mArticleAdapter;
     @Autowired
     public String hotNameKey;
+
     private HistoryAdapter mHistoryAdapter;
     private SearchView mSearchView;
     private List<HistoryModel> mHistoryModels;
+    private HotAdapter<HotKey> mHotKeyAdapter;
+    private HotAdapter<Friend> mHotFriendAdapter, mBookMarkAdapter;
     private View mSearchHeadView;
-    private TagFlowLayout mTflHistorys;
+    private TagFlowLayout mTflHistorys, mTtlBookMarks, mTflHotKeys, mTflHotFriends;
 
     @Override
     protected int getLayoutId() {
@@ -71,16 +76,22 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
         /**设置SearchHeadView*/
         mSearchHeadView = LayoutInflater.from(this).inflate(R.layout.layout_search_head, null);
         mTflHistorys = (TagFlowLayout) mSearchHeadView.findViewById(R.id.tflHistorys);
+        mTtlBookMarks = (TagFlowLayout) mSearchHeadView.findViewById(R.id.tflBookMarks);
+        mTflHotKeys = (TagFlowLayout) mSearchHeadView.findViewById(R.id.tflHotKeys);
+        mTflHotFriends = (TagFlowLayout) mSearchHeadView.findViewById(R.id.tflHotFriends);
+
         mArticleAdapter.addHeaderView(mSearchHeadView);
 
+
         /**设置事件监听*/
-        mArticleAdapter.setOnItemClickListener(this);
-        mArticleAdapter.setOnItemChildClickListener(this);
-        mSwipeRefreshLayout.setOnRefreshListener(this);
-        mArticleAdapter.setOnLoadMoreListener(this);
+        setListener();
 
         /**加载历史搜索记录*/
         mPresenter.loadHistory();
+
+        /**加载热门记录*/
+        mPresenter.loadHotData();
+
 
         /**登陆成功刷新*/
         RxBus.getInstance().toFlowable(LoginEvent.class)
@@ -96,7 +107,9 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
             public boolean onTagClick(View view, int position, FlowLayout parent) {
                 String name = mHistoryAdapter.getItem(position).getName();
                 mSearchView.setQuery(name, false);
-                mPresenter.loadSearchArtcles(name);
+                ARouter.getInstance().build("/hotsearch/SearchDetailActivity")
+                        .withString(Constant.CONTENT_HOT_NAME_KEY, name)
+                        .navigation();
                 return false;
             }
         });
@@ -124,7 +137,9 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
             @Override
             public boolean onQueryTextSubmit(String query) {
                 mPresenter.addHistory(query);
-                mPresenter.loadSearchArtcles(query);
+                ARouter.getInstance().build("/hotsearch/SearchDetailActivity")
+                        .withString(Constant.CONTENT_HOT_NAME_KEY, query)
+                        .navigation();
                 return true;
             }
 
@@ -165,6 +180,34 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
                 mArticleAdapter.getItem(position).getAuthor());
     }
 
+    private void setListener() {
+        mArticleAdapter.setOnItemClickListener(this);
+        mArticleAdapter.setOnItemChildClickListener(this);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mArticleAdapter.setOnLoadMoreListener(this);
+
+        mTflHotKeys.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
+            @Override
+            public boolean onTagClick(View view, int position, FlowLayout parent) {
+                String name = mHotKeyAdapter.getItem(position).getName();
+                mSearchView.setQuery(name, false);
+                ARouter.getInstance().build("/hotsearch/SearchDetailActivity")
+                        .withString(Constant.CONTENT_HOT_NAME_KEY, name)
+                        .navigation();
+                return false;
+            }
+        });
+        mTflHotFriends.setOnTagClickListener(new TagFlowLayout.OnTagClickListener() {
+            @Override
+            public boolean onTagClick(View view, int position, FlowLayout parent) {
+                ArticleContentActivity.start(mHotFriendAdapter.getItem(position).getId(),
+                        mHotFriendAdapter.getItem(position).getLink(), mHotFriendAdapter.getItem(position).getName(),
+                        null);
+                return false;
+            }
+        });
+    }
+
     @Override
     public void showLoading() {
         mSwipeRefreshLayout.setRefreshing(true);
@@ -197,5 +240,16 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
     public void addHistorySuccess(HistoryModel historyModel) {
         if (mHistoryModels != null) mHistoryModels.add(0, historyModel);
         mHistoryAdapter.notifyDataChanged();
+    }
+
+    @Override
+    public void setHotData(List<HotKey> hotKeys, List<Friend> friends) {
+        mHotKeyAdapter = new HotAdapter(this, hotKeys);
+        mTflHotKeys.setAdapter(mHotKeyAdapter);
+
+        mHotFriendAdapter = new HotAdapter<>(this, friends);
+        mTflHotFriends.setAdapter(mHotFriendAdapter);
+
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 }

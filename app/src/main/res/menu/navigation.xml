@@ -11,6 +11,11 @@
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="@string/title_knowledgesystem" />
 
+    <item
+        android:id="@+id/navigation_project"
+        android:icon="@drawable/ic_apps"
+        android:title="@string/title_project" />
+
     <item android:title="@string/title_my">
         <menu android:id="@+id/navigation_my">
             <item

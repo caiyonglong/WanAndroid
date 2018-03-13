@@ -1,6 +1,14 @@
 package com.cyl.wanandroid.ui.my;
 
+import android.app.ActivityOptions;
+import android.content.Intent;
+import android.os.Build;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
+import android.support.v7.widget.CardView;
+import android.util.Pair;
+import android.view.View;
+import android.widget.Button;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -16,6 +24,7 @@ import com.cyl.wanandroid.utils.RxBus;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by lw on 2018/1/24.
@@ -26,6 +35,13 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     TextInputEditText mEtUsername;
     @BindView(R.id.etPassword)
     TextInputEditText mEtPassword;
+
+    @BindView(R.id.fabLogin)
+    FloatingActionButton fab;
+    @BindView(R.id.btnRegister)
+    Button mBtnRegister;
+    @BindView(R.id.cardview)
+    CardView mCardView;
 
     @Override
     protected int getLayoutId() {
@@ -41,6 +57,14 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
     protected void initView() {
         mEtUsername.setText(SPUtils.getInstance(Constant.SHARED_NAME).getString(Constant.USERNAME_KEY));
         mEtPassword.setText(SPUtils.getInstance(Constant.SHARED_NAME).getString(Constant.PASSWORD_KEY));
+
+        /**注册成功销毁Login*/
+        RxBus.getInstance().toFlowable(LoginEvent.class).subscribe(new Consumer<LoginEvent>() {
+            @Override
+            public void accept(LoginEvent event) throws Exception {
+                finish();
+            }
+        });
     }
 
     @Override
@@ -48,7 +72,7 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
         return true;
     }
 
-    @OnClick(R.id.btnLogin)
+    @OnClick(R.id.fabLogin)
     public void login() {
         String username = mEtUsername.getText().toString();
         String password = mEtPassword.getText().toString();
@@ -61,8 +85,16 @@ public class LoginActivity extends BaseActivity<LoginPresenter> implements Login
 
     @OnClick(R.id.btnRegister)
     public void register() {
-        RegisterActivity.start();
-        finish();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final Intent intent = new Intent(this, RegisterActivity.class);
+            startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(
+                    this,
+                    Pair.create((View) mBtnRegister, "transition_next"),
+                    Pair.create((View) fab, "transition_fab"),
+                    Pair.create((View) mCardView, "transition_cardView")).toBundle());
+        } else {
+            RegisterActivity.start();
+        }
     }
 
     @Override

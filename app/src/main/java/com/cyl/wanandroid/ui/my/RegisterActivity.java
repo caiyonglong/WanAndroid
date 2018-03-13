@@ -1,6 +1,9 @@
 package com.cyl.wanandroid.ui.my;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.support.design.widget.TextInputEditText;
+import android.transition.Transition;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -29,6 +32,11 @@ public class RegisterActivity extends BaseActivity<RegisterPresenter> implements
     @BindView(R.id.etRePassword)
     TextInputEditText mEtRePassword;
 
+    @OnClick(R.id.fab)
+    void backLogin() {
+        onBackPressed();
+    }
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_register;
@@ -41,6 +49,9 @@ public class RegisterActivity extends BaseActivity<RegisterPresenter> implements
 
     @Override
     protected void initView() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().getEnterTransition().addListener(new EnterTransitionListener());
+        }
         mEtUsername.setText(SPUtils.getInstance(Constant.SHARED_NAME).getString(Constant.USERNAME_KEY));
         mEtPassword.setText(SPUtils.getInstance(Constant.SHARED_NAME).getString(Constant.PASSWORD_KEY));
         mEtRePassword.setText(SPUtils.getInstance(Constant.SHARED_NAME).getString(Constant.PASSWORD_KEY));
@@ -73,6 +84,35 @@ public class RegisterActivity extends BaseActivity<RegisterPresenter> implements
         SPUtils.getInstance(Constant.SHARED_NAME).put(Constant.PASSWORD_KEY, user.getPassword());
         /**登陆成功通知其他界面刷新*/
         RxBus.getInstance().post(new LoginEvent());
+        LoginActivity.start();
         this.finish();
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    private class EnterTransitionListener implements Transition.TransitionListener {
+        @Override
+        public void onTransitionStart(Transition transition) {
+
+        }
+
+        @Override
+        public void onTransitionEnd(Transition transition) {
+        }
+
+        @Override
+        public void onTransitionCancel(Transition transition) {
+
+        }
+
+        @Override
+        public void onTransitionPause(Transition transition) {
+
+        }
+
+        @Override
+        public void onTransitionResume(Transition transition) {
+
+        }
     }
 }
