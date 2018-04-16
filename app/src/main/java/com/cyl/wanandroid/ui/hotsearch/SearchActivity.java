@@ -50,10 +50,10 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
     @Autowired
     public String hotNameKey;
 
-    private HistoryAdapter mHistoryAdapter;
     private SearchView mSearchView;
     private List<HistoryModel> mHistoryModels;
     private HotAdapter<HotKey> mHotKeyAdapter;
+    private HotAdapter<HistoryModel> mHistoryAdapter;
     private HotAdapter<Friend> mHotFriendAdapter, mBookMarkAdapter;
     private View mSearchHeadView;
     private TagFlowLayout mTflHistorys, mTtlBookMarks, mTflHotKeys, mTflHotFriends;
@@ -231,7 +231,7 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
     @Override
     public void setHistory(List<HistoryModel> historyModels) {
         this.mHistoryModels = historyModels;
-        mHistoryAdapter = new HistoryAdapter(this, mHistoryModels);
+        mHistoryAdapter = new HotAdapter<>(this, mHistoryModels);
         mTflHistorys.setAdapter(mHistoryAdapter);
         mSwipeRefreshLayout.setRefreshing(false);
     }
@@ -244,7 +244,7 @@ public class SearchActivity extends BaseActivity<SearchPresenter> implements Sea
 
     @Override
     public void setHotData(List<HotKey> hotKeys, List<Friend> friends) {
-        mHotKeyAdapter = new HotAdapter(this, hotKeys);
+        mHotKeyAdapter = new HotAdapter<>(this, hotKeys);
         mTflHotKeys.setAdapter(mHotKeyAdapter);
 
         mHotFriendAdapter = new HotAdapter<>(this, friends);

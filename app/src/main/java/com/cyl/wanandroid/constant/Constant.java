@@ -32,6 +32,7 @@ public class Constant {
      * childrenData key
      */
     public static final String CONTENT_CHILDREN_DATA_KEY = "childrenData";
+    public static final String CONTENT_CHILDREN_POSITION_KEY = "position";
     /**
      * hotFriend key
      */

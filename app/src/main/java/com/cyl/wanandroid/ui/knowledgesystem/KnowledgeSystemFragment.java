@@ -76,6 +76,7 @@ public class KnowledgeSystemFragment extends BaseFragment<KnowledgeSystemPresent
         ARouter.getInstance().build("/article/ArticleTypeActivity")
                 .withString(Constant.CONTENT_TITLE_KEY, mKnowledgeSystemAdapter.getItem(position).getName())
                 .withObject(Constant.CONTENT_CHILDREN_DATA_KEY, mKnowledgeSystemAdapter.getItem(position).getChildren())
+                .withInt(Constant.CONTENT_CHILDREN_POSITION_KEY, 0)
                 .navigation();
     }
 

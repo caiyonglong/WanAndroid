@@ -1,10 +1,13 @@
 package com.cyl.wanandroid.ui.article;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
@@ -52,10 +55,20 @@ public class ArticleContentActivity extends BaseActivity<ArticleContentPresenter
                 .useDefaultIndicator()// 使用默认进度条
                 .defaultProgressBarColor() // 使用默认进度条颜色
                 .setReceivedTitleCallback(mReceivedTitleCallback) //设置 Web 页面的 title 回调
+                .setWebChromeClient(mWebChromeClient)
                 .createAgentWeb()//
                 .ready()
                 .go(url);
     }
+
+    private WebChromeClient mWebChromeClient = new WebChromeClient() {
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            //do you work
+            view.getSettings().setSupportZoom(true);
+            view.getSettings().setBuiltInZoomControls(true);
+        }
+    };
 
     @Override
     protected boolean showHomeAsUp() {

@@ -1,10 +1,6 @@
 # WanAndroid
 Try to build a www.wanandroid.com client
 
-#  前言
-在 [WanAndroid](https://github.com/salecoding/WanAndroid) 的9c2e7bb 节点上开发。
-阅读源码，学习借鉴。
-
 # 接口
 [玩Android接口](http://www.wanandroid.com/blog/show/2)
 

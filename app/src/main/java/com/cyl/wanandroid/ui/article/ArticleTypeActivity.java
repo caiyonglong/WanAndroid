@@ -25,6 +25,8 @@ public class ArticleTypeActivity extends BaseActivity {
     @Autowired
     public String title;
     @Autowired
+    public int position;
+    @Autowired
     public List<KnowledgeSystem.ChildrenBean> childrenData;
     @BindView(R.id.tabArticleTypes)
     TabLayout mTabArticleTypes;
@@ -49,6 +51,7 @@ public class ArticleTypeActivity extends BaseActivity {
         mArticleTypeFragmentPagerAdapter = new ArticleTypeFragmentPagerAdapter(getSupportFragmentManager(), childrenData);
         mVpArticleTypes.setAdapter(mArticleTypeFragmentPagerAdapter);
         mTabArticleTypes.setupWithViewPager(mVpArticleTypes);
+        mVpArticleTypes.setCurrentItem(position);
     }
 
     @Override

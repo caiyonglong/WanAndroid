@@ -99,6 +99,7 @@ public class KnowledgeSystem implements SerializationService {
 
     }
 
+
     public static class ChildrenBean implements SerializationService {
         /**
          * id : 60

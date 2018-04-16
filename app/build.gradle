@@ -13,8 +13,8 @@ android {
             storePassword RELEASE_STORE_PASSWORD
         }
     }
-    compileSdkVersion 26
-    buildToolsVersion rootProject.ext.android.buildToolsVersion
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
     defaultConfig {
         applicationId rootProject.ext.android.applicationId

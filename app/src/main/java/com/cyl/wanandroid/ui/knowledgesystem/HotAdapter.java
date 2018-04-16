@@ -1,4 +1,4 @@
-package com.cyl.wanandroid.ui.hotsearch;
+package com.cyl.wanandroid.ui.knowledgesystem;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -7,33 +7,42 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.cyl.wanandroid.R;
-import com.cyl.wanandroid.db.HistoryModel;
 import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagAdapter;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 /**
- * Created by lw on 2018/2/2.
+ * Created by lw on 2018/1/23.
  */
 
-public class HistoryAdapter extends TagAdapter<HistoryModel> {
+public class HotAdapter<T> extends TagAdapter<T> {
     private Context mContext;
     private LayoutInflater mInflater;
 
-    public HistoryAdapter(Context context, List<HistoryModel> datas) {
+    public HotAdapter(Context context, List<T> datas) {
         super(datas);
         this.mContext = context;
         this.mInflater = LayoutInflater.from(mContext);
     }
 
     @Override
-    public View getView(FlowLayout parent, int position, HistoryModel model) {
-        View view = mInflater.inflate(R.layout.item_history, parent, false);
+    public View getView(FlowLayout parent, int position, T item) {
+        View view = mInflater.inflate(R.layout.item_category, parent, false);
         TextView tvTitle = (TextView) view.findViewById(R.id.tvTitle);
         int parseColor = 0;
         try {
-            tvTitle.setText(model.getName());
+            String name = "";
+            Field[] fields = item.getClass().getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if (field.getName().equals("name")) {
+                    name = (String) field.get(item);
+                    break;
+                }
+            }
+            tvTitle.setText(name);
             String str = Integer.toHexString((int) (Math.random() * 16777215));
             parseColor = Color.parseColor("#".concat(str));
             tvTitle.setTextColor(parseColor);
